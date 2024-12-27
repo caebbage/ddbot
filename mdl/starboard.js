@@ -5,8 +5,11 @@ module.exports = async (client, msg) => {
 
   if (msg.reference?.messageId) { // if message is a reply to something
     let replied = msg.channel.messages.resolve(msg.reference.messageId);
-    
-    let author = await replied.guild.members.fetch(replied.author.id)
+
+    let author;
+    try { author = await replied.guild.members.fetch(replied.author.id)
+    } catch (err) {}
+
     // create embed of that message
     let embed = {
       "description": replied.content,
@@ -27,7 +30,9 @@ module.exports = async (client, msg) => {
     embeds.push(embed) // adds to message
   }
 
-  let author = await msg.guild.members.fetch(msg.author.id)
+  let author;
+  try { author = await msg.guild.members.fetch(msg.author.id)
+  } catch (err) {}
 
   let embed = {
     "description": msg.content,

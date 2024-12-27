@@ -6,6 +6,8 @@
 
 module.exports = async (client, react) => {
   try {
+    if (react.partial) react = await react.fetch()
+    
     if (react.message.inGuild()
       && ![client.config.get("starboard_channel"), client.config.get("starboard_nsfw_channel")].includes(react.message.channelId)
       && react.emoji.toString() == "⭐" && react.count) {
@@ -24,7 +26,7 @@ module.exports = async (client, react) => {
       } else {
         boardChannel.send(content).then((msg) => {
           console.log(`  [str] ${msg.id} created (${react.message.id} reacted to)`)
-        })
+        }).catch(err => console.log(err))
       }
       return
     }

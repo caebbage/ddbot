@@ -1,6 +1,6 @@
 module.exports = async (client, react) => {
   try {
-    console.log("reaction removed")
+    if (react.partial) react = await react.fetch()
     // if in server
     if (react.message.inGuild()
       && ![client.config.get("starboard_channel"), client.config.get("starboard_nsfw_channel")].includes(react.message.channelId)) {

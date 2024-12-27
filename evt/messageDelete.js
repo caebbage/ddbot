@@ -4,12 +4,16 @@
 
 module.exports = async (client, msg) => {
   try {
+    if (msg.partial) msg = await msg.fetch()
+
     if (
       msg.inGuild()
       && ![client.config.get("starboard_channel"), client.config.get("starboard_nsfw_channel")].includes(msg.channelId)
       && msg.reactions.resolve("⭐")?.count
     ) {
   
+      if (react.partial) await react.fetch()
+
       let boardChannel = msg.channel.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel')
       boardChannel = client.channels.resolve(boardChannel);
 
