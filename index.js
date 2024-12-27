@@ -1,16 +1,22 @@
-require('dotenv').config({silent: process.env.NODE_ENV === 'production'});
+require('dotenv').config({
+  silent: process.env.NODE_ENV === 'production'
+});
 
-const Discord = require("discord.js"),
-  client = new Discord.Client({ intents: 38401, partials: ["CHANNEL"] }),
-  { promisify } = require("util"),
+const { Client, Partials } = require("discord.js"),
+  client = new Client({
+    intents: 38401,
+    partials: [Partials.Channel, Partials.Message, Partials.Reaction]
+  }), {  promisify } = require("util"),
   readdir = promisify(require("fs").readdir);
 
-  
+
 
 require("./mdl/sheets.js")(client);
 require("./mdl/functions.js")(client);
 
-client.cmd = {}, client.alt = {cmd: {}};
+client.cmd = {}, client.alt = {
+  cmd: {}
+};
 
 const init = async () => {
   // Here we load **commands** into memory, as a collection, so they're accessible
