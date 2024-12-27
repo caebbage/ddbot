@@ -17,11 +17,8 @@ module.exports = async (client, msg) => {
       "timestamp": replied.editedTimestamp || replied.createdTimestamp
     }
 
-    console.log(msg);
-    console.log(msg.attachments?.at(0));
-
     // attaches image/video if first embedded file is one
-    if (/(image|video)/.test(msg.attachments?.at(0)?.contentType)) {
+    if (/(image|video)/.test(replied.attachments?.at(0)?.contentType)) {
       embed.image = {
         "url": replied.attachments.at(0).proxyURL
       }
