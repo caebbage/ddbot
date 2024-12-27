@@ -5,7 +5,7 @@ require('dotenv').config({
 const { Client, Partials } = require("discord.js"),
   client = new Client({
     intents: 38401,
-    partials: [Partials.Channel, Partials.Message, Partials.Reaction]
+    partials: [ Partials.Channel, Partials.Message, Partials.Reaction ]
   }), {  promisify } = require("util"),
   readdir = promisify(require("fs").readdir);
 
