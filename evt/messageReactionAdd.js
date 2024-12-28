@@ -7,13 +7,16 @@
 module.exports = async (client, react) => {
   try {
     if (react.partial) react = await react.fetch()
-    
+
     if (react.message.inGuild()
       && ![client.config.get("starboard_channel"), client.config.get("starboard_nsfw_channel")].includes(react.message.channelId)
       && react.emoji.toString() == "⭐" && react.count) {
       let content = await require('../mdl/starboard')(client, react.message);
   
-      let boardChannel = react.message.channel.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel')
+      let boardChannel = (react.message.channel.parent ?
+        (react.message.channel.parent.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel')) :
+        (react.message.channel.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel'))
+      )
       boardChannel = client.channels.resolve(boardChannel);
 
       let boardMessage = (await boardChannel.messages.fetch({ limit: 100 })).find(post => {

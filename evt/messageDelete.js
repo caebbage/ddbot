@@ -7,7 +7,10 @@ module.exports = async (client, msg) => {
       msg.reactions?.resolve("⭐")?.count &&
       ![client.config.get("starboard_channel"), client.config.get("starboard_nsfw_channel")].includes(msg.channelId)
     ) {
-      let boardChannel = msg.channel?.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel')
+      let boardChannel = (react.message.channel.parent ?
+        (react.message.channel.parent.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel')) :
+        (react.message.channel.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel'))
+      )
       boardChannel = client.channels.resolve(boardChannel);
 
       let boardMessage = (await boardChannel.messages.fetch({ limit: 100 })).find(post => {

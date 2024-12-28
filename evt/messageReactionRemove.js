@@ -5,7 +5,10 @@ module.exports = async (client, react) => {
     if (react.message.inGuild()
       && ![client.config.get("starboard_channel"), client.config.get("starboard_nsfw_channel")].includes(react.message.channelId)) {
       // check find message on one of starboards
-      let boardChannel = react.message.channel.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel') 
+      let boardChannel = (react.message.channel.parent ?
+        (react.message.channel.parent.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel')) :
+        (react.message.channel.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel'))
+      )
       boardChannel = client.channels.resolve(boardChannel);
 
       let boardMessage = (await boardChannel.messages.fetch({ limit: 100 })).find(post => {
