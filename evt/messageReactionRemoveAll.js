@@ -7,20 +7,11 @@ module.exports = async (client, msg, reacts) => {
       reacts?.find(r => r.emoji.toString() == "⭐") &&
       ![client.config.get("starboard_channel"), client.config.get("starboard_nsfw_channel")].includes(msg.channelId)
     ) {
-      let boardChannel = (react.message.channel.isThread() ?
-        (msg.channel.parent.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel')) :
-        (msg.channel.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel'))
-      )
-
-      boardChannel = client.channels.resolve(boardChannel);
-
-      let boardMessage = (await boardChannel.messages.fetch({ limit: 100 })).find(post => {
-        if (post.embeds && (post.embeds[0]?.footer?.text == msg.id || post.embeds[1]?.footer?.text == msg.id)) return true
-          else return false
-      })
+      let { boardChannel, boardMessage } = require('../mdl/starboard'),
+        bMessage = await boardMessage(boardChannel(client, msg));
   
-      if (boardMessage) {
-        boardMessage.delete().then(message => {
+      if (bMessage) {
+        bMessage.delete().then(message => {
           console.log(`  [str] ${message.id} deleted (${msg.id} reacts removed)`)
         });
       }

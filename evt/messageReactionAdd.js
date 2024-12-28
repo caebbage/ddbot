@@ -11,23 +11,16 @@ module.exports = async (client, react) => {
     if (react.message.inGuild()
       && ![client.config.get("starboard_channel"), client.config.get("starboard_nsfw_channel")].includes(react.message.channelId)
       && react.emoji.toString() == "⭐" && react.count) {
-      let content = await require('../mdl/starboard')(client, react.message);
-  
-      let boardChannel = (react.message.channel.isThread() ?
-        (react.message.channel.parent.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel')) :
-        (react.message.channel.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel'))
-      )
-      boardChannel = client.channels.resolve(boardChannel);
+      
+      let { boardChannel, boardMessage, embed } = require('../mdl/starboard'),
+        content = await embed(client, react.message),
+        bChannel = boardChannel(client, react.message),
+        bMessage = await boardMessage(bChannel);
 
-      let boardMessage = (await boardChannel.messages.fetch({ limit: 100 })).find(post => {
-        if (post.embeds && (post.embeds[0]?.footer?.text == react.message.id || post.embeds[1]?.footer?.text == react.message.id)) return true
-        else return false
-      })
-
-      if (boardMessage) {
-        boardMessage.edit(content).catch(err => console.log(err))
+      if (bMessage) {
+        bMessage.edit(content).catch(err => console.log(err))
       } else {
-        boardChannel.send(content).then((msg) => {
+        bChannel.send(content).then((msg) => {
           console.log(`  [str] ${msg.id} created (${react.message.id} reacted to)`)
         }).catch(err => console.log(err))
       }
