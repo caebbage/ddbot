@@ -7,7 +7,7 @@ module.exports = async (client, msg, reacts) => {
       reacts?.find(r => r.emoji.toString() == "⭐") &&
       ![client.config.get("starboard_channel"), client.config.get("starboard_nsfw_channel")].includes(msg.channelId)
     ) {
-      let boardChannel = (msg.channel.parent ?
+      let boardChannel = (react.message.channel.isThread() ?
         (msg.channel.parent.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel')) :
         (msg.channel.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel'))
       )

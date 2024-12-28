@@ -13,7 +13,7 @@ module.exports = async (client, react) => {
       && react.emoji.toString() == "⭐" && react.count) {
       let content = await require('../mdl/starboard')(client, react.message);
   
-      let boardChannel = (react.message.channel.parent ?
+      let boardChannel = (react.message.channel.isThread() ?
         (react.message.channel.parent.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel')) :
         (react.message.channel.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel'))
       )
