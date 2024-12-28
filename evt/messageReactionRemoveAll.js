@@ -8,7 +8,7 @@ module.exports = async (client, msg, reacts) => {
       ![client.config.get("starboard_channel"), client.config.get("starboard_nsfw_channel")].includes(msg.channelId)
     ) {
       let { boardChannel, boardMessage } = require('../mdl/starboard'),
-        bMessage = await boardMessage(boardChannel(client, msg));
+        bMessage = await boardMessage(boardChannel(client, msg), msg);
   
       if (bMessage) {
         bMessage.delete().then(message => {

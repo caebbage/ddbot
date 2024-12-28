@@ -15,7 +15,7 @@ module.exports = async (client, react) => {
       let { boardChannel, boardMessage, embed } = require('../mdl/starboard'),
         content = await embed(client, react.message),
         bChannel = boardChannel(client, react.message),
-        bMessage = await boardMessage(bChannel);
+        bMessage = await boardMessage(bChannel, react.message);
 
       if (bMessage) {
         bMessage.edit(content).catch(err => console.log(err))

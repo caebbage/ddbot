@@ -7,32 +7,33 @@ module.exports = {
 
     return client.channels.resolve(channel);
   },
-  boardMessage: async (channel) => {
+  boardMessage: async (channel, message) => {
     return (await channel.messages.fetch({ limit: 100 })).find(post => {
-      if (post.embeds && (post.embeds[0]?.footer?.text == react.message.id || post.embeds[1]?.footer?.text == react.message.id)) return true
+      if (post.embeds && (post.embeds[0]?.footer?.text == message.id || post.embeds[1]?.footer?.text == message.id)) return true
       else return false
     })
   },
   embed: async (client, message) => {
     let embeds = []
 
-    async function addMessage(msg) {
+    async function addMessage(msg, isMain) {
       let author;
       try {
         author = await msg.guild.members.fetch(msg.author.id)
       } catch (err) {}
-
+      
       let embed = {
         "description": msg.content,
-        "color": client.config.get('starboard_embed_color'),
         "author": {
           "name": author?.displayName || msg.author.displayName,
           "icon_url": author?.displayAvatarURL() || msg.author.displayAvatarURL()
         },
-        "footer": {
-          "text": msg.id
-        },
         "timestamp": msg.editedTimestamp || msg.createdTimestamp
+      }
+
+      if (isMain) {
+        embed.color = client.config.get('starboard_embed_color')
+        embed.footer = {"text": msg.id}
       }
 
       // attaches image/video if first embedded file is one
@@ -47,10 +48,10 @@ module.exports = {
 
     if (message.reference?.messageId) { // if message is a reply to something
       let replied = message.channel.messages.resolve(message.reference.messageId);
-      await addMessage(replied);
+      await addMessage(replied, false);
     }
 
-    await addMessage(message);
+    await addMessage(message, true);
 
     embeds = [...embeds, ...message.embeds] // adds embeds of message into embeds, if applicable
 
