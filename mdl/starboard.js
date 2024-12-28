@@ -1,66 +1,49 @@
-module.exports = async (client, msg) => {
+module.exports = async (client, message) => {
   // starboard message builder
 
   let embeds = []
 
-  if (msg.reference?.messageId) { // if message is a reply to something
-    let replied = msg.channel.messages.resolve(msg.reference.messageId);
-
+  async function addMessage(msg) {
     let author;
-    try { author = await replied.guild.members.fetch(replied.author.id)
+    try { author = await msg.guild.members.fetch(msg.author.id)
     } catch (err) {}
-
-    // create embed of that message
+  
     let embed = {
-      "description": replied.content,
+      "description": msg.content,
+      "color": client.config.get('starboard_embed_color'),
       "author": {
-        "name": "Replying to " + (author?.displayName || replied.author.displayName),
-        "icon_url": author?.displayAvatarURL() || replied.author.displayAvatarURL()
+        "name": author?.displayName || msg.author.displayName,
+        "icon_url": author?.displayAvatarURL() || msg.author.displayAvatarURL()
       },
-      "timestamp": replied.editedTimestamp || replied.createdTimestamp
+      "footer": {
+        "text": msg.id
+      },
+      "timestamp": msg.editedTimestamp || msg.createdTimestamp
     }
-
+  
     // attaches image/video if first embedded file is one
-    if (/(image|video)/.test(replied.attachments?.at(0)?.contentType)) {
+    if (/(image|video)/.test(msg.attachments?.at(0)?.contentType)) {
       embed.image = {
-        "url": replied.attachments.at(0).proxyURL
+        "url": msg.attachments.at(0).proxyURL
       }
     }
-
-    embeds.push(embed) // adds to message
+  
+    embeds.push(embed);
   }
 
-  let author;
-  try { author = await msg.guild.members.fetch(msg.author.id)
-  } catch (err) {}
-
-  let embed = {
-    "description": msg.content,
-    "color": client.config.get('starboard_embed_color'),
-    "author": {
-      "name": author?.displayName || msg.author.displayName,
-      "icon_url": author?.displayAvatarURL() || msg.author.displayAvatarURL()
-    },
-    "footer": {
-      "text": msg.id
-    },
-    "timestamp": msg.editedTimestamp || msg.createdTimestamp
+  if (message.reference?.messageId) { // if message is a reply to something
+    let replied = message.channel.messages.resolve(message.reference.messageId);
+    await addMessage(replied);
   }
 
-  // attaches image/video if first embedded file is one
-  if (/(image|video)/.test(msg.attachments?.at(0)?.contentType)) {
-    embed.image = {
-      "url": msg.attachments.at(0).proxyURL
-    }
-  }
+  await addMessage(message);
 
-  embeds.push(embed); // adds message itself to embeds
-  embeds = [...embeds, ...msg.embeds] // adds embeds of message into embeds, if applicable
+  embeds = [...embeds, ...message.embeds] // adds embeds of message into embeds, if applicable
   
   if (embeds.length > 10) embeds.length = 10 // truncates amount of embeds in case
 
   return {
-    content: `🌟 ${msg.reactions.cache.get("⭐").count} → ${msg.url}`,
+    content: `🌟 ${message.reactions.cache.get("⭐").count} → ${message.url}`,
     embeds: embeds
   }
 }

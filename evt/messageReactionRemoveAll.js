@@ -1,10 +1,10 @@
-module.exports = async (client, msg) => {
+module.exports = async (client, msg, reacts) => {
   try {
     try {if (msg.partial) msg = msg.resolve()} catch (err) {} // resolves message if partial and able to
-
+    
     if (
       msg.inGuild?.() &&
-      msg.reactions?.resolve("⭐")?.count &&
+      reacts?.find(r => r.emoji.toString() == "⭐") &&
       ![client.config.get("starboard_channel"), client.config.get("starboard_nsfw_channel")].includes(msg.channelId)
     ) {
       let boardChannel = msg.channel?.nsfw ? client.config.get('starboard_nsfw_channel') : client.config.get('starboard_channel')
@@ -17,7 +17,7 @@ module.exports = async (client, msg) => {
   
       if (boardMessage) {
         boardMessage.delete().then(message => {
-          console.log(`  [str] ${message.id} deleted (${msg.id} deleted)`)
+          console.log(`  [str] ${message.id} deleted (${msg.id} reacts removed)`)
         });
       }
       return
