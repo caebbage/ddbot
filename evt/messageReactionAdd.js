@@ -21,7 +21,7 @@ module.exports = async (client, react) => {
         bMessage.edit(content).catch(err => console.log(err))
       } else {
         bChannel.send(content).then((msg) => {
-          console.log(`  [str] ${msg.id} created (${react.message.id} reacted to)`)
+          console.log(`  [star] ${msg.id} created (${react.message.id} reacted to)`)
         }).catch(err => console.log(err))
       }
       return

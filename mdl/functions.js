@@ -47,6 +47,60 @@ module.exports = (client) => {
     delete client[type][name]; // nuke actual command
     return false;
   };
+
+  client.pad = function (str, length = 2, pad = "0") {
+    let string = "" + str;
+    let diff = length - string.length;
+    if (diff > 0) {
+      return pad.repeat(diff) + string
+    } else return string
+  }
+
+  client.makeInvEmbed = async function(chara, user) {
+    if (!user) user = client.users.cache.find(u => u.username.toLowerCase() == chara.MUN.toLowerCase())
+
+    let inv = "";
+    if (chara.GENERAL) inv += "GENERAL\n" + chara.GENERAL
+    if (chara.GIFTED) inv += "\n\nGIFTED\n" + chara.GIFTED
+    if (chara.SPECIAL) inv += "\n\nSPECIAL\n" + chara.SPECIAL
+
+    inv = inv.trim().replace(/^(?!- )(.+)$/gm, "### $1").replace(/^- (.+)/gm, "-# - $1")
+
+    return {
+      "title": `◆ ${chara.CHARACTER}`,
+      "description": inv,
+      "url": chara.BASICS || undefined,
+      "color": "#bf0000",
+      "footer": {
+        "text": `played by ${chara.MUN} ◆ ${chara.TIMEZONE}`,
+        "icon_url": user?.displayAvatarURL() || client.config.get('success_img')
+      }
+    }
+  }
+
+  client.makeCharEmbed = async function (chara, user) {
+    let self = (await client.db.chart.find(x => x.get("Name") == chara.CHARACTER))?.get(chara.CHARACTER);
+    if (!user) user = client.users.cache.find(u => u.username.toLowerCase() == chara.MUN.toLowerCase())
+
+    return {
+      "title": `◆ ${chara.CHARACTER}`,
+      "description": `-# \`#${chara["ID #"]}\` of \`#${chara["REALITY #"]}\` ◆ `
+      + `\`${chara.PRONOUNS}\` ◆ \`${chara.HEIGHT}\`\n\n`
+      + (self ? `${self.split("\n").map(x => "> " + x).join("\n")}\n\n` : "")
+      + `\`\`\`ansi\n\u001b[2;31m\u001b[1;31mLEVEL ${this.pad(chara.LEVEL)}\u001b[0m\u001b[2;31m\u001b[0m\n\`\`\`\n`
+      + `\` DEATHS \` ${chara.DEATHS}　　 \` MD \` ${chara.MD} \` EP \` ${chara.EP}\n\n`
+      + `\`     ESSENCE \` ${(isNaN(+chara.E) || +chara.E >= 0) ? "+" : "-"}${isNaN(+chara.E) ? chara.E : this.pad(Math.abs(+chara.E))}　`
+      + `\`        GRIT \` ${(isNaN(+chara.G) || +chara.G >= 0) ? "+" : "-"}${isNaN(+chara.G) ? chara.G : this.pad(Math.abs(+chara.G))}\n`
+      + `\` OBSERVATION \` ${(isNaN(+chara.O) || +chara.O >= 0) ? "+" : "-"}${isNaN(+chara.O) ? chara.O : this.pad(Math.abs(+chara.O))}　`
+      + `\`      SANITY \` ${(isNaN(+chara.S) || +chara.S >= 0) ? "+" : "-"}${isNaN(+chara.S) ? chara.S : this.pad(Math.abs(+chara.S))}`,
+      "url": chara.BASICS || undefined,
+      "color": "#bf0000",
+      "footer": {
+        "text": `played by ${chara.MUN} ◆ ${chara.TIMEZONE}`,
+        "icon_url": user?.displayAvatarURL() || client.config.get('success_img')
+      }
+    }
+  };
   
   // makes text FANCY
   client.styleText = function (style, str) {

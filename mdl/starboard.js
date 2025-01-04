@@ -58,7 +58,7 @@ module.exports = {
     if (embeds.length > 10) embeds.length = 10 // truncates amount of embeds in case
 
     return {
-      content: `🌟 ${message.reactions.cache.get("⭐").count} → ${message.url}`,
+      content: `**🌟 ${message.reactions.cache.get("⭐").count} → ${message.url}**`,
       embeds: embeds
     }
   }

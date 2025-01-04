@@ -15,7 +15,7 @@ module.exports = async (client, react) => {
 
       } else if (bMessage){
         bMessage.delete().then(msg => {
-          console.log(`  [str] ${msg.id} deleted (${react.message.id} react removed)`)
+          console.log(`  [star] ${msg.id} deleted (${react.message.id} react removed)`)
         })
       }
     }

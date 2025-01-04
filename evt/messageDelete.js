@@ -12,7 +12,7 @@ module.exports = async (client, msg) => {
   
       if (bMessage) {
         bMessage.delete().then(message => {
-          console.log(`  [str] ${message.id} deleted (${msg.id} deleted)`)
+          console.log(`  [star] ${message.id} deleted (${msg.id} deleted)`)
         });
       }
       return
