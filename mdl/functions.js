@@ -65,6 +65,7 @@ module.exports = (client) => {
     if (chara.SPECIAL) inv += "\n\nSPECIAL\n" + chara.SPECIAL
 
     inv = inv.trim().replace(/^(?!- )(.+)$/gm, "### $1").replace(/^- (.+)/gm, "-# - $1")
+    if (inv == "") {inv = "-# - You don't seem to own anything..."}
 
     return {
       "title": `◆ ${chara.CHARACTER}`,
