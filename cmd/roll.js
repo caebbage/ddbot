@@ -56,7 +56,8 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
       }
 
       embed.timestamp = (new Date()).toISOString();
-      
+
+      delete roll, result;
     } catch (err) {
       embed.description = `Something went wrong: \`${err}\``;
     }
@@ -69,7 +70,7 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
       embed
     ]
   })
-  return;
+  delete embed; return;
 };
 
 exports.conf = {

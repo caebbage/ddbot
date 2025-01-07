@@ -24,6 +24,7 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
             embed
           ]
         })
+        delete list, embed; return;
       } else {
         const res = [
           ...await client.db.charas.filter((x) => x.get("MUN").toLowerCase() == author.username.toLowerCase()),
@@ -54,13 +55,13 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
             embeds: [embed],
             components
           })
-
+          delete buttons, components;
         } else {
           message.reply({
             embeds: [embed]
           })
         }
-
+        delete list, res, embed; return;
       }
     } else {
       let results = list.find(x => x.name.toLowerCase().includes(`"${inputs.join(" ").toLowerCase()}"`)) ||
@@ -78,12 +79,14 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
         message.reply({
           embeds: [await client.makeCharEmbed(chara)]
         })
+        delete chara;
       } else {
         embed.description = "No such character found."
         message.reply({
           embeds: [embed]
         })
       }
+      delete list, results, embed; return;
     }
   } catch (err) {
     console.log(err)
@@ -91,8 +94,8 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
     message.reply({
       embeds: [embed]
     })
+    delete list, embed; return;
   }
-  return;
 };
 
 const array_chunks = (array, chunk_size) => Array(Math.ceil(array.length / chunk_size)).fill().map((_, index) => index * chunk_size).map(begin => array.slice(begin, begin + chunk_size));

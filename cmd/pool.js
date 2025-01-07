@@ -36,6 +36,7 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
             }
           }
         }
+        delete poolData, sheet;
       } else {
         embeds = [{
           description: `Pool not found!`,
@@ -53,6 +54,7 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
   message.reply({
     embeds
   })
+  delete embeds;
   return;
 };
 

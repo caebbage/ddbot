@@ -42,7 +42,7 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
       ]
     }
   )
-  return;
+  delete embed; return;
 };
 
 exports.conf = {

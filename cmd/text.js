@@ -23,6 +23,7 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
       ]
     }
   )
+  delete embed; return;
 };
 
 exports.conf = {
