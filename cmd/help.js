@@ -14,6 +14,7 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
       ]
     }
   )
+  return;
 };
 
 exports.conf = {

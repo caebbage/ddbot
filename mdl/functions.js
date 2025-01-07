@@ -71,7 +71,7 @@ module.exports = (client) => {
       "title": `◆ ${chara.CHARACTER}`,
       "description": inv,
       "url": chara.BASICS || undefined,
-      "color": "#bf0000",
+      "color": client.config.get("embed_color"),
       "footer": {
         "text": `played by ${chara.MUN} ◆ ${chara.TIMEZONE}`,
         "icon_url": user?.displayAvatarURL() || client.config.get('success_img')
@@ -95,7 +95,7 @@ module.exports = (client) => {
       + `\` OBSERVATION \` ${(isNaN(+chara.O) || +chara.O >= 0) ? "+" : "-"}${isNaN(+chara.O) ? chara.O : this.pad(Math.abs(+chara.O))}　`
       + `\`      SANITY \` ${(isNaN(+chara.S) || +chara.S >= 0) ? "+" : "-"}${isNaN(+chara.S) ? chara.S : this.pad(Math.abs(+chara.S))}`,
       "url": chara.BASICS || undefined,
-      "color": "#bf0000",
+      "color": client.config.get("embed_color"),
       "footer": {
         "text": `played by ${chara.MUN} ◆ ${chara.TIMEZONE}`,
         "icon_url": user?.displayAvatarURL() || client.config.get('success_img')

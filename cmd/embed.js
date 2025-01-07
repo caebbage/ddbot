@@ -18,6 +18,7 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
       }
     )
   }
+  return;
 };
 
 exports.conf = {

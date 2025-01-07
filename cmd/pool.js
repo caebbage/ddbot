@@ -11,14 +11,14 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
     if (client.pools.find((val) => val.get("name").toLowerCase() == inputs[0])) {
       let sheet = client.pools.find((val) => val.get("name").toLowerCase() == inputs[0]);
   
-      let poolData = await client.data.sheetsById[sheet.get("id")].getRows()
+      let poolData = (await client.data.sheetsById[sheet.get("id")]).getRows()
       let poolSize = 0;
   
       poolData.forEach((val) => {
         poolSize += +val.get("weight")
       })
   
-      let rollCnt = sheet.get("multi").toUpperCase() == "TRUE" ? Math.min(Math.max(+inputs[1] || 1, 1), 10) : 1;
+      let rollCnt = sheet.get("multi").toUpperCase() == "TRUE" ? Math.min(Math.max(isNaN(+inputs[1]) ? false : +inputs[1] || 1, 1), 10) : 1;
 
       for (let i = 0; i < rollCnt; i++) {
         let rng = Math.random() * poolSize;

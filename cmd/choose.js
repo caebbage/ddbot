@@ -8,7 +8,7 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
   let choices = inputs.join(" ").split("|").map(x => x.trim()).filter(x => x);
 
   if (choices.length > 1) {
-    embed.title = `Choose`
+    embed.title = `◆ Choose`
     if (comment) embed.description += `*${comment.split("\n").map(x => `> ${x}`).join("\n")}*\n`
 
     let rng = Math.random();
@@ -43,6 +43,7 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
       ]
     }
   )
+  return;
 };
 
 exports.conf = {

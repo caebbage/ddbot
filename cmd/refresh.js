@@ -2,10 +2,11 @@ exports.run = async (client, message, action) => { // eslint-disable-line no-unu
   try {
     await client.refreshData();
     message.react("✅")
-} catch (e) {
+  } catch (e) {
     console.log(e);
     message.react("❌");
-}
+  }
+  return;
 }
 
 exports.conf = {

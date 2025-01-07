@@ -54,9 +54,9 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
           "icon_url": msg.author.displayAvatarURL()
         }
       }
-    
-      embed.timestamp = (new Date()).toISOString();
 
+      embed.timestamp = (new Date()).toISOString();
+      
     } catch (err) {
       embed.description = `Something went wrong: \`${err}\``;
     }
@@ -69,6 +69,7 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
       embed
     ]
   })
+  return;
 };
 
 exports.conf = {

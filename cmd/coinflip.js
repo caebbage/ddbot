@@ -5,7 +5,7 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
     color: client.config.get("embed_color")
   };
 
-  embed.title = `Coinflip`
+  embed.title = `◆ Coinflip`
   if (comment) embed.description += `*${comment.split("\n").map(x => `> ${x}`).join("\n")}*\n`
 
   let rng = Math.floor(Math.random() * 2);
@@ -42,6 +42,7 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
       ]
     }
   )
+  return;
 };
 
 exports.conf = {

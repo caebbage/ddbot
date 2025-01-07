@@ -7,6 +7,7 @@ exports.run = async (client, message, action) => { // eslint-disable-line no-unu
         console.log(e);
         message.react("❌");
     }
+    return;
 }
 
 exports.conf = {
