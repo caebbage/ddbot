@@ -20,9 +20,8 @@ module.exports = async (client) => {
   }; 
 
   // get info from bot config sheets
-  await client.data.loadInfo();
-  
   client.refreshData = async function () {
+    await client.data.loadInfo();
     client.config = (await client.data.sheetsById[0].getRows())[0];
     client.pools = await client.data.sheetsById[client.config.get("commands")].getRows();
     
