@@ -9,7 +9,7 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "@dice-roller/rpg-dice-roller": "^5.5.0",
+    "dice-roller-parser": "^0.1.8",
     "discord.js": "^13.17.1",
     "dotenv": "^16.4.7",
     "fuzzy": "^0.1.3",

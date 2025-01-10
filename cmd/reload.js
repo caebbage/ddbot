@@ -12,7 +12,7 @@ exports.run = async (client, message, action) => { // eslint-disable-line no-unu
 
 exports.conf = {
     enabled: false,
-    DM: false,
+    DM: true,
     aliases: [],
     adminOnly: true
 };

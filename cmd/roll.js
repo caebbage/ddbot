@@ -1,6 +1,8 @@
-exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line no-unused-vars
+const { DiceRoller, DiscordRollRenderer } = require("dice-roller-parser");
+const roller = new DiceRoller();
+const renderer = new DiscordRollRenderer();
 
-  const { DiceRoll } = require('@dice-roller/rpg-dice-roller');
+exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line no-unused-vars
   let user = "<@" + msg.author.id + ">";
   let embed = {
     description: "",
@@ -10,54 +12,59 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
 
   if (inputs.length) {
     try {
-      const roll = new DiceRoll(inputs.join(" "));
+      let input = inputs.join(" ");
 
-      embed.title = `Dice Roll`
-      if (comment) embed.description += `*${comment.split("\n").map(x => `> ${x}`).join("\n")}*\n`
+      let roll = roller.roll(input);
 
-      let result = {
-        'roll': roll.output.slice(0, roll.output.indexOf(":")).trim(),
-        'calc': roll.output.slice(roll.output.indexOf(":") + 1, roll.output.indexOf(" = ")).trim()
+      try {
+        let eval = renderer.render(roll)
+          .replace(/^(.+) = (\d+)$/m, "$1") // trims result out of eval
+          .replace(/\((.+?) = \d+\)/g, "[$1]") // replaces roll frames and removes =
+        if (!eval.includes("]") && input.toLowerCase().includes("d"))
+          eval = `[${eval}]` // adds frame if unframed + there is a roll in the input
+
+        let min = (new DiceRoller(() => 0)).roll(input).value,
+          max = (new DiceRoller(() => 1)).roll(input).value;
+
+        embed.title = `◆ Dice Roll`
+        if (comment) embed.description += `*${comment.split("\n").map(x => `> ${x}`).join("\n")}*\n`
+
+        embed.description += `**${user}**'s `;
+
+        embed.description += `**${input}**: ${eval}`;
+        embed.description += `\n— *result* ⟶ \` ${roll.value} \``
+
+        if (+roll.value >= (+min + +max) / 2) {
+          embed.thumbnail = {
+            "url": client.config.get('success_img')
+          }
+        } else {
+          embed.thumbnail = {
+            "url": client.config.get('fail_img')
+          }
+        }
+
+        if (msg.guild) {
+          let guildUser = await msg.guild.members.fetch(msg.author.id)
+
+          embed.footer = {
+            "text": guildUser.displayName || guildUser.username,
+            "icon_url": guildUser.displayAvatarURL()
+          }
+        } else {
+          embed.footer = {
+            "text": msg.author.displayName || msg.author.username,
+            "icon_url": msg.author.displayAvatarURL()
+          }
+        }
+
+        embed.timestamp = (new Date()).toISOString();
+
+        delete input, roll, min, max;
+      } catch (err) {
+        console.log(err);
+        embed.description = "Bad input. If in doubt, try standard dice format `1d100 + MOD`."
       }
-
-      embed.description += `**${user}**'s `;
-
-      result.calc = result.calc
-        .replace(/(\d+)d/g, "~~$1~~") // #d = discarded
-        .replace(/(\d+)\*/g, "&&$1&&") // #* = success
-        .replace(/(&*\d+&*)\*\*/g, "**$1**") // #** = crit success
-        .replace(/(\d+)__/g, "*$1*") // #__ = crit failure
-        .replace(/&/g, "_") // replace & workaround
-      embed.description += `**[${result.roll}]**: ${result.calc}`;
-      embed.description += `\n— *result* ⟶ \` ${roll.total} \``
-
-      if (roll.total > (roll.maxTotal + roll.minTotal) / 2) {
-        embed.thumbnail = {
-          "url": client.config.get('success_img')
-        }
-      } else {
-        embed.thumbnail = {
-          "url": client.config.get('fail_img')
-        }
-      }
-
-      if (msg.guild) {
-        let guildUser = await msg.guild.members.fetch(msg.author.id)
-    
-        embed.footer = {
-          "text": guildUser.displayName || guildUser.username,
-          "icon_url": guildUser.displayAvatarURL()
-        }
-      } else {
-        embed.footer = {
-          "text": msg.author.displayName || msg.author.username,
-          "icon_url": msg.author.displayAvatarURL()
-        }
-      }
-
-      embed.timestamp = (new Date()).toISOString();
-
-      delete roll, result;
     } catch (err) {
       embed.description = `Something went wrong: \`${err}\``;
     }
@@ -70,7 +77,8 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
       embed
     ]
   })
-  delete embed; return;
+  delete embed;
+  return;
 };
 
 exports.conf = {
