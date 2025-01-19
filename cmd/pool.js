@@ -12,11 +12,12 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
       if (client.pools.find((val) => val.get("name").toLowerCase() == inputs[0])) {
         let sheet = client.pools.find((val) => val.get("name").toLowerCase() == inputs[0]);
     
-        let poolData = await client.data.sheetsById[sheet.get("id")].getRows()
+        let poolData = (await client.data.sheetsById[sheet.get("id")].getRows())
+          .map(x => x.toObject()).filter((val) => val.value && !isNaN(val.weight));
         let poolSize = 0;
     
         poolData.forEach((val) => {
-          poolSize += +val.get("weight")
+          poolSize += +val.weight
         })
     
         let rollCnt = sheet.get("multi").toUpperCase() == "TRUE" ? Math.min(Math.max(isNaN(+inputs[1]) ? false : +inputs[1] || 1, 1), 10) : 1;
@@ -25,14 +26,14 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
           let rng = Math.random() * poolSize;
   
           for (let item of poolData) {
-            if (rng < +item.get("weight")) {
+            if (rng < +item.weight) {
               embeds.push({
-                description: item.get("value"),
+                description: item.value,
                 color: client.config.get("embed_color")
               })
               break;
             } else {
-              rng -= +item.get("weight")
+              rng -= +item.weight
             }
           }
         }
@@ -44,6 +45,7 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
         }]
       }
     } catch (err) {
+      console.log(err);
       embeds = [{
         description: `An error occured; check logs.`,
         color: client.config.get('embed_color')
