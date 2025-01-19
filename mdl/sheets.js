@@ -1,5 +1,3 @@
-const { config } = require('dotenv');
-
 module.exports = async (client) => {
   const { GoogleSpreadsheet } = require('google-spreadsheet');
   const { JWT } = require('google-auth-library');
@@ -13,30 +11,24 @@ module.exports = async (client) => {
     scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
   });
 
+  // bot configuration sheet & data refresh functions
   client.data = new GoogleSpreadsheet('1JL1pbEePQltqzTDVR-HaT5sKGUK_g7X6PbZmj-LorZw', serviceAccountAuth);
 
-  client.db = {
-    src: new GoogleSpreadsheet('1JeXEb5R7MuF8IsnKfTNd5E5nMf3gwU93iVENB5M41-8',  serviceAccountAuth),
-  }; 
-
-  // get info from bot config sheets
   client.refreshData = async function () {
     await client.data.loadInfo();
     client.config = (await client.data.sheetsById[0].getRows())[0];
-    client.pools = await client.data.sheetsById[client.config.get("commands")].getRows();
+    client.pools = (await client.data.sheetsById[client.config.get("commands")]).getRows();
     
     console.log("Config and pools refreshed.")
   }
   
   client.refreshData();
 
-  // get infrom from database
+
+  client.db = {src: new GoogleSpreadsheet('1JeXEb5R7MuF8IsnKfTNd5E5nMf3gwU93iVENB5M41-8',  serviceAccountAuth),}; 
   await client.db.src.loadInfo();
 
-  client.db.charas = await sheetSetup(0, 4);
-  client.db.npcs = await sheetSetup('382892795', 3);
-  client.db.chart = await sheetSetup('902346809', 3);
-
+  // function for setup of data fetching/retrieval for each sheet
   async function sheetSetup(id, rows) {
     await client.db.src.sheetsById[id].loadHeaderRow(rows)
 
@@ -53,4 +45,8 @@ module.exports = async (client) => {
       }
     }
   }
+
+  client.db.charas = await sheetSetup(0, 4);
+  client.db.npcs = await sheetSetup('382892795', 3);
+  client.db.chart = await sheetSetup('902346809', 3);
 }
