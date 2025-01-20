@@ -1,7 +1,7 @@
 exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line no-unused-vars
   console.log("embed...")
   try {
-    let embed = msg.content.substring((client.config.get("prefix") + "embed").length).trim();
+    let embed = inputs.join(" ");
 
     msg.channel.send({
       embeds: [
@@ -22,7 +22,7 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
 };
 
 exports.conf = {
-  enabled: true,
+  enabled: false,
   DM: true,
   aliases: [],
   adminOnly: false
