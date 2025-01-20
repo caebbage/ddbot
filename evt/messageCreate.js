@@ -48,6 +48,12 @@ module.exports = async (client, msg) => {
         console.log(`  [pool] ${command}: ${msg.author.username} (${msg.author.id})`);
         
         client.cmd['pool'].run(client, msg, [command, ...args], comment);
+        
+      // or a path command of that name
+      } else if (client.paths.find((val) => val.get("name").toLowerCase() == command)) {
+        console.log(`  [path] ${command}: ${msg.author.username} (${msg.author.id})`);
+        
+        client.cmd['path'].run(client, msg, [command, ...args], comment);
       }
     }
   } catch (err) {

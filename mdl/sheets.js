@@ -17,9 +17,10 @@ module.exports = async (client) => {
   client.refreshData = async function () {
     await client.data.loadInfo();
     client.config = (await client.data.sheetsById[0].getRows())[0];
-    client.pools = await client.data.sheetsById[client.config.get("commands")].getRows();
+    client.pools = await client.data.sheetsById[client.config.get("pools")].getRows();
+    client.paths = await client.data.sheetsById[client.config.get("paths")].getRows();
     
-    console.log("Config and pools refreshed.")
+    console.log("Config, pools, and paths refreshed.")
   }
   
   client.refreshData();

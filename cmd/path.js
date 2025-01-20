@@ -4,28 +4,32 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
 
   if (inputs.length < 1) {
     embeds = [{
-      description: `Please use the command such as \`${client.config.get('prefix') || 'dd!' }pool poolname [times]\`!`,
+      description: `Please use the command such as \`${client.config.get('prefix') || 'dd!' }path pathname\`!`,
       color: client.config.get('embed_color')
     }]
   } else {
     try {
-      if (client.pools.find((val) => val.get("name").toLowerCase() == inputs[0])) {
-        let sheet = client.pools.find((val) => val.get("name").toLowerCase() == inputs[0]);
+      if (client.paths.find((val) => val.get("name").toLowerCase() == inputs[0])) {
+        let sheet = client.paths.find((val) => val.get("name").toLowerCase() == inputs[0]);
     
-        let poolData = (await client.data.sheetsById[sheet.get("id")].getRows())
+        let pathData = (await client.data.sheetsById[sheet.get("id")].getRows())
           .map(x => x.toObject()).filter((val) => val.value && !isNaN(val.weight));
-        let poolSize = 0;
-    
-        poolData.forEach((val) => {
-          poolSize += +val.weight
+
+        inputs.shift()
+
+        let subpath = inputs.length ? inputs.join(" ").toLowerCase() : "default";
+
+        let validPaths = pathData.filter((x) => 
+        x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes(subpath))
+
+        let pathSize = 0
+        validPaths.forEach((val) => {
+          pathSize += +val.weight
         })
-    
-        let rollCnt = sheet.get("multi").toUpperCase() == "TRUE" ? Math.min(Math.max(isNaN(+inputs[1]) ? false : +inputs[1] || 1, 1), 10) : 1;
   
-        for (let i = 0; i < rollCnt; i++) {
-          let rng = Math.random() * poolSize;
+          let rng = Math.random() * pathSize;
   
-          for (let item of poolData) {
+          for (let item of validPaths) {
             if (rng < +item.weight) {
               embeds.push({
                 description: item.value,
@@ -35,12 +39,12 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
             } else {
               rng -= +item.weight
             }
-          }
         }
-        delete poolData, sheet;
+
+        delete pathData, subpath, validPaths, sheet;
       } else {
         embeds = [{
-          description: `Pool not found!`,
+          description: `Path not found!`,
           color: client.config.get('embed_color')
         }]
       }
@@ -68,5 +72,5 @@ exports.conf = {
 };
 
 exports.help = {
-  name: "pool"
+  name: "path"
 };
