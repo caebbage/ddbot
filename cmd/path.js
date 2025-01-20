@@ -4,14 +4,14 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
 
   if (inputs.length < 1) {
     embeds = [{
-      description: `Please use the command such as \`${client.config.get('prefix') || 'dd!' }path pathname\`!`,
+      description: `Please use the command such as \`${client.config.get('prefix') || 'dd!'}path pathname\`!`,
       color: client.config.get('embed_color')
     }]
   } else {
     try {
       if (client.paths.find((val) => val.get("name").toLowerCase() == inputs[0])) {
         let sheet = client.paths.find((val) => val.get("name").toLowerCase() == inputs[0]);
-    
+
         let pathData = (await client.data.sheetsById[sheet.get("id")].getRows())
           .map(x => x.toObject()).filter((val) => val.value && !isNaN(val.weight));
 
@@ -19,16 +19,17 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
 
         let subpath = inputs.length ? inputs.join(" ").toLowerCase() : "default";
 
-        let validPaths = pathData.filter((x) => 
-        x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes(subpath))
+        let validPaths = pathData.filter((x) =>
+          x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes(subpath))
 
-        let pathSize = 0
-        validPaths.forEach((val) => {
-          pathSize += +val.weight
-        })
-  
+        if (validPaths > 0) {
+          let pathSize = 0
+          validPaths.forEach((val) => {
+            pathSize += +val.weight
+          })
+
           let rng = Math.random() * pathSize;
-  
+
           for (let item of validPaths) {
             if (rng < +item.weight) {
               embeds.push({
@@ -39,6 +40,12 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
             } else {
               rng -= +item.weight
             }
+          }
+        } else {
+          embeds = [{
+            description: `Subpath not found... double check if you typoed, and ping teru if you didn't.`,
+            color: client.config.get('embed_color')
+          }]
         }
 
         delete pathData, subpath, validPaths, sheet;
