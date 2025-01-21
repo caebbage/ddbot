@@ -47,7 +47,7 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
             x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes("error"));
 
           embeds = [{
-            description: errorPath[0] || `Subpath not found... double check if you typoed, and ping teru if you didn't.`,
+            description: errorPath[0].value || `Subpath not found... double check if you typoed, and ping teru if you didn't.`,
             color: client.config.get('embed_color')
           }]
 
