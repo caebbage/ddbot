@@ -22,7 +22,7 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
         let validPaths = pathData.filter((x) =>
           x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes(subpath))
 
-        if (validPaths > 0) {
+        if (validPaths.length > 0) {
           let pathSize = 0
           validPaths.forEach((val) => {
             pathSize += +val.weight
@@ -42,7 +42,6 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
             }
           }
         } else {
-          
           let errorPath = pathData.filter((x) =>
             x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes("error"));
 
