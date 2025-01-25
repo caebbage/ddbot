@@ -13,7 +13,7 @@ exports.conf = {
   enabled: false,
   DM: true,
   aliases: [],
-  adminOnly: false
+  adminOnly: true
 };
 
 exports.help = {

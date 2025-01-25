@@ -56,6 +56,11 @@ module.exports = (client) => {
     } else return string
   }
 
+  client.isModerator = async function(member) {
+    if (member?.roles.cache.get(client.config.get("moderator_role"))) return true
+    else return false
+  }
+
   client.makeInvEmbed = async function(chara, user) {
     if (!user) user = client.users.cache.find(u => u.username.toLowerCase() == chara.MUN.toLowerCase())
 

@@ -2,8 +2,7 @@ const { DiceRoller, DiscordRollRenderer } = require("dice-roller-parser");
 const roller = new DiceRoller();
 const renderer = new DiscordRollRenderer();
 
-exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line no-unused-vars
-  let user = "<@" + msg.author.id + ">";
+exports.run = async (client, message, inputs, comment) => { // eslint-disable-line no-unused-vars
   let embed = {
     description: "",
     color: client.config.get('embed_color')
@@ -29,7 +28,7 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
         embed.title = `◆ Dice Roll`
         if (comment) embed.description += `*${comment.split("\n").map(x => `> ${x}`).join("\n")}*\n`
 
-        embed.description += `**${user}**'s `;
+        embed.description += `**${"<@" + message.author.id + ">"}**'s `;
 
         embed.description += `**${input}**: ${eval}`;
         embed.description += `\n— *result* ⟶ \` ${roll.value} \``
@@ -44,8 +43,8 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
           }
         }
 
-        if (msg.guild) {
-          let guildUser = await msg.guild.members.fetch(msg.author.id)
+        if (message.guild) {
+          let guildUser = await message.guild.members.fetch(message.author.id)
 
           embed.footer = {
             "text": guildUser.displayName || guildUser.username,
@@ -53,8 +52,8 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
           }
         } else {
           embed.footer = {
-            "text": msg.author.displayName || msg.author.username,
-            "icon_url": msg.author.displayAvatarURL()
+            "text": message.author.displayName || message.author.username,
+            "icon_url": message.author.displayAvatarURL()
           }
         }
 
@@ -72,7 +71,7 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
     embed.description = "To roll, use the following command: `" + (client.config.get("prefix") || 'dd!') + "roll XdX # comment`\nAdvanced notation is supported. View [here](https://dice-roller.github.io/documentation/guide/notation/modifiers.html) for details."
   }
 
-  msg.reply({
+  message.reply({
     embeds: [
       embed
     ]

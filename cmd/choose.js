@@ -1,5 +1,4 @@
-exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line no-unused-vars
-  let user = "<@" + msg.author.id + ">";
+exports.run = async (client, message, inputs, comment) => { // eslint-disable-line no-unused-vars
   let embed = {
     description: "",
     color: client.config.get("embed_color")
@@ -13,15 +12,15 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
 
     let rng = Math.random();
 
-    embed.description += `**${user}**'s `;
+    embed.description += `**${"<@" + message.author.id + ">"}**'s `;
 
     embed.description += `**[ ${choices.join(" | ")} ]**`;
     embed.description += `\n— *result* ⟶ \` ${choices[Math.floor(rng * choices.length)]} \``
 
   } else embed.description = "Lack of input. Be sure to split your choices with `|`."
 
-  if (msg.guild) {
-    let guildUser = await msg.guild.members.fetch(msg.author.id)
+  if (message.guild) {
+    let guildUser = await message.guild.members.fetch(message.author.id)
 
     embed.footer = {
       "text": guildUser.displayName || guildUser.username,
@@ -29,14 +28,14 @@ exports.run = async (client, msg, inputs, comment) => { // eslint-disable-line n
     }
   } else {
     embed.footer = {
-      "text": msg.author.displayName || msg.author.username,
-      "icon_url": msg.author.displayAvatarURL()
+      "text": message.author.displayName || message.author.username,
+      "icon_url": message.author.displayAvatarURL()
     }
   }
 
   embed.timestamp = (new Date()).toISOString();
 
-  msg.reply(
+  message.reply(
     {
       embeds: [
         embed

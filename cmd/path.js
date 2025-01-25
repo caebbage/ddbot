@@ -9,51 +9,58 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
     }]
   } else {
     try {
-      if (client.paths.find((val) => val.get("name").toLowerCase() == inputs[0])) {
-        let sheet = client.paths.find((val) => val.get("name").toLowerCase() == inputs[0]);
+      let cmd = client.paths.find((val) => val.get("name").toLowerCase() == inputs[0]);
+      if (cmd) {
+        if (cmd.get("mod_only") === "FALSE" || client.isModerator(message.member)) {
+          let pathData = (await client.data.sheetsById[cmd.get("id")].getRows())
+            .map(x => x.toObject()).filter((val) => val.value && !isNaN(val.weight));
 
-        let pathData = (await client.data.sheetsById[sheet.get("id")].getRows())
-          .map(x => x.toObject()).filter((val) => val.value && !isNaN(val.weight));
+          inputs.shift()
 
-        inputs.shift()
+          let subpath = inputs.length ? inputs.join(" ").toLowerCase() : "default";
 
-        let subpath = inputs.length ? inputs.join(" ").toLowerCase() : "default";
+          let validPaths = pathData.filter((x) =>
+            x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes(subpath))
 
-        let validPaths = pathData.filter((x) =>
-          x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes(subpath))
+          if (validPaths.length > 0) {
+            let pathSize = 0
+            validPaths.forEach((val) => {
+              pathSize += +val.weight
+            })
 
-        if (validPaths.length > 0) {
-          let pathSize = 0
-          validPaths.forEach((val) => {
-            pathSize += +val.weight
-          })
+            let rng = Math.random() * pathSize;
 
-          let rng = Math.random() * pathSize;
-
-          for (let item of validPaths) {
-            if (rng < +item.weight) {
-              embeds.push({
-                description: item.value,
-                color: client.config.get("embed_color")
-              })
-              break;
-            } else {
-              rng -= +item.weight
+            for (let item of validPaths) {
+              if (rng < +item.weight) {
+                embeds.push({
+                  description: item.value,
+                  color: client.config.get("embed_color")
+                })
+                break;
+              } else {
+                rng -= +item.weight
+              }
             }
-          }
-        } else {
-          let errorPath = pathData.filter((x) =>
-            x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes("error"));
+          } else {
+            let errorPath = pathData.filter((x) =>
+              x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes("error"));
 
+            embeds = [{
+              description: errorPath[0].value || `Subpath not found... double check if you typoed, and ping teru if you didn't.`,
+              color: client.config.get('embed_color')
+            }]
+
+            delete errorPath;
+          }
+
+          delete pathData, subpath, validPaths;
+        } else {
           embeds = [{
-            description: errorPath[0].value || `Subpath not found... double check if you typoed, and ping teru if you didn't.`,
+            description: `You don't have the permissions to use this pool!`,
             color: client.config.get('embed_color')
           }]
-
-          delete errorPath;
         }
-
-        delete pathData, subpath, validPaths, sheet;
+        delete cmd;
       } else {
         embeds = [{
           description: `Path not found!`,
