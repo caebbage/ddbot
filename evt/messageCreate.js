@@ -25,10 +25,6 @@ module.exports = async (client, msg) => {
     // check if command exists
     const cmd = client.cmd[command] || client.alt.cmd[command] && client.cmd[client.alt.cmd[command]]
 
-    if (cmd.conf.adminOnly && client.isModerator(msg.member)) {
-      return msg.reply("You're not authorized to use this command!");
-    }
-
     let comment;
 
     if (args.includes(" # ")) {
@@ -40,7 +36,10 @@ module.exports = async (client, msg) => {
     args.shift();
 
     if (cmd) {
-      // check if command is available via DM
+
+      if (cmd.conf.adminOnly && !client.isModerator(msg.member))
+        return msg.reply("You're not authorized to use this command!");
+      
       if (!msg.guild && !cmd.conf.DM)
         return msg.reply("This command is unavailable via private msg.");
 
@@ -62,6 +61,7 @@ module.exports = async (client, msg) => {
       }
     }
   } catch (err) {
+    console.log(err);
     msg.reply({
       embeds: [{
         description: "**An error occured:** " + err,

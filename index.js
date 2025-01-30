@@ -15,8 +15,6 @@ const Discord = require("discord.js"),
   { promisify } = require("util"),
   readdir = promisify(require("fs").readdir);
 
-  
-
 require("./mdl/sheets.js")(client);
 require("./mdl/functions.js")(client);
 

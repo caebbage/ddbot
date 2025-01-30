@@ -8,7 +8,7 @@ module.exports = async (client) => {
     // see "Authentication" section in docs for more info
     email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
     key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-    scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
   });
 
   // bot configuration sheet & data refresh functions
@@ -43,6 +43,16 @@ module.exports = async (client) => {
       },
       async map (func) {
         return (await this.src()).map(func);
+      },
+      async set(row, key, val) {
+        row.set(key, val);
+        try {
+          await row.save();
+          return true;
+        } catch (err) {
+          console.log(err);
+          return false;
+        }
       }
     }
   }
