@@ -5,7 +5,7 @@ module.exports = {
       let name = /^` .+ ` ー ` (.+) `$/m.exec(x.description)?.[1];
       if (name) {
         if (res[name]) {
-          res[name] ++
+          res[name]++
         } else res[name] = 1
       }
     })
@@ -13,12 +13,13 @@ module.exports = {
   },
   toObject(list) {
     let res = {};
-
-    [...list.matchAll(/^- (.+?)( \(x(\d+)\))?$/gm)]
-      .forEach(x => {
-        if (res[x[1]]) res[x[1]] += x[3] ? +x[3] : 1
-        else res[x[1]] = x[3] ? +x[3] : 1
-      })
+    if (list) {
+      [...list.matchAll(/^- (.+?)( \(x(\d+)\))?$/gm)]
+        .forEach(x => {
+          if (res[x[1]]) res[x[1]] += x[3] ? +x[3] : 1
+          else res[x[1]] = x[3] ? +x[3] : 1
+        })
+    }
 
     return res
   },

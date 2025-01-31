@@ -92,7 +92,28 @@ module.exports = (client) => {
         return entries.filter(x => userSearch.includes(x.get("CHARACTER")))
       } else {
         return [entries.find(x => x.get("CHARACTER") == charaSearch[0])]
-      } 
+      }
     } else return false
+  }
+
+  client.drawPool = function (pool, amt = 1) {
+    let poolSize = 0,
+      result = []
+
+    pool.forEach((item) => {
+      poolSize += +item.weight
+    })
+
+    for (let i = 0; i < amt; i++) {
+      let rng = Math.random() * poolSize;
+
+      for (let item of pool) {
+        if (rng < +item.weight) {
+          result.push(item.value)
+          break;
+        } else rng -= +item.weight
+      }
+    }
+    return result;
   }
 }

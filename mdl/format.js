@@ -3,8 +3,7 @@ async function makeInvEmbed(client, chara, user) {
 
   let inv = "";
   if (chara.GENERAL) inv += "GENERAL\n" + chara.GENERAL
-  if (chara.GIFTED) inv += "\n\nGIFTED\n" + chara.GIFTED
-  if (chara.SPECIAL) inv += "\n\nSPECIAL\n" + chara.SPECIAL
+  if (chara.OTHER) inv += "\n\n" + chara.OTHER
 
   inv = inv.trim().replace(/^(?!- )(.+)$/gm, "### $1").replace(/^- (.+)/gm, "-# - $1")
   if (inv == "") { inv = "-# - You don't seem to own anything..." }
@@ -85,4 +84,50 @@ const styleText = {
   }
 }
 
-module.exports = {makeCharEmbed, makeInvEmbed, pad, arrayChunks, styleText}
+function parseEmbed(src) {
+  let res = {};
+  res.title = /(?<=^\*\*Title:\*\*)(.+)$/mi.exec(src)?.[0]?.trim()
+  res.color = /(?<=^\*\*Color:\*\*)(.+)$/mi.exec(src)?.[0]?.trim()
+  res.description = /(?<=^\*\*Description:\*\*)((.*\n)*.*)/mi.exec(src)?.[0].trim()
+
+  let author = {
+    icon_url: /(?<=^\*\*AuthorPic:\*\*)(.+)$/mi.exec(src)?.[0]?.trim()?.replace(/[<>]/g, ""),
+    name: /(?<=^\*\*Author:\*\*)(.+)$/mi.exec(src)?.[0]?.trim()
+  };
+  if (author.url || author.name) res.author = author
+
+  let thumbnail = {
+    url: /(?<=^\*\*Thumbnail:\*\*)(.+)$/mi.exec(src)?.[0]?.trim()?.replace(/[<>]/g, "")
+  }
+  if (thumbnail.url) res.thumbnail = thumbnail;
+
+  let image = {
+    url: /(?<=^\*\*Image:\*\*)(.+)$/mi.exec(src)?.[0]?.trim()?.replace(/[<>]/g, "")
+  }
+  if (image.url) res.image = image;
+
+  return removeEmpty(res);
+}
+
+function formatPool(src, format, parse = false) {
+  return src.map(val => {
+    let embed = { ... format }
+    if (parse) {
+      embed = { ...embed, ... parseEmbed(val)}
+    } else {
+      embed.description = val
+    }
+    return embed
+  })
+}
+
+const removeEmpty = (obj) => {
+  let newObj = {};
+  Object.keys(obj).forEach((key) => {
+    if (obj[key] === Object(obj[key])) newObj[key] = removeEmpty(obj[key]);
+    else if (obj[key]) newObj[key] = obj[key];
+  });
+  return newObj;
+};
+
+module.exports = { makeCharEmbed, makeInvEmbed, pad, arrayChunks, styleText, parseEmbed, formatPool }

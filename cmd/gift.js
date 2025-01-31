@@ -1,4 +1,4 @@
-const { fromEmbeds, toObject } = require("../mdl/inventory.js");
+const { toObject } = require("../mdl/inventory.js");
 const { arrayChunks } = require("../mdl/format.js")
 
 exports.run = async (client, message, inputs, comment) => { // eslint-disable-line no-unused-vars
@@ -10,25 +10,19 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
   try {
     let mentions = message.content.match(/(?<=<@!?)\d+(?=>)/g);
     if (mentions.length) {
-      let given;
-      if (message.reference?.messageId) { // if message is a reply to something
-        let replied = await message.channel.messages.fetch(message.reference.messageId);
-        given = fromEmbeds(replied.embeds)
-      } else {
-        given = toObject(message.content);
-      }
+      let taken = toObject(message.content);
 
-      if (Object.keys(given).length) {
-        let user = await client.users.fetch(mentions[0]);
-        let charas = await client.findChar(user.username);
+      if (Object.keys(taken).length) {
+        let user = message.author;
+        let charas = await client.findChar(user.username || user.user.username);
 
         if (charas.length) {
-          embed.description = "Select the character to give to."
+          embed.description = "Select the character to gift from."
 
           components = arrayChunks(
             charas.map(x => {
               return {
-                custom_id: "giveto:" + x.get("CHARACTER"),
+                custom_id: "giftfrom:" + x.get("CHARACTER"),
                 type: 2,
                 style: 4,
                 label: x.get("CHARACTER")
@@ -43,10 +37,10 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
           embed.description = "Could not find characters for user!"
         }
       } else {
-        embed.description = "Could not find anything to give!"
+        embed.description = "Could not find anything to take!"
       }
     } else {
-      embed.description = "No user specified to add items to!"
+      embed.description = "No user specified to take items from!"
     }
   } catch (err) {
     console.log(err);
@@ -67,9 +61,9 @@ exports.conf = {
   enabled: true,
   DM: false,
   aliases: [],
-  adminOnly: true
+  adminOnly: false
 };
 
 exports.help = {
-  name: "give"
+  name: "gift"
 };

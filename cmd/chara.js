@@ -22,16 +22,15 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
       embed = await makeCharEmbed(client, res[0]);
 
       if (res.length > 1) {
-        let buttons = res.map(x => {
-          return {
-            custom_id: "char:" + x.CHARACTER,
-            type: 2,
-            style: 4,
-            label: x.CHARACTER
-          }
-        })
-
-        components = arrayChunks(buttons, 5).map((x) => {
+        components = arrayChunks(
+          res.map(x => {
+            return {
+              custom_id: "char:" + x.CHARACTER,
+              type: 2,
+              style: Object.keys(x).includes("INVENTORY") ? 4 : 2,
+              label: x.CHARACTER
+            }
+          }), 5).map((x) => {
           return {
             type: 1,
             components: x
