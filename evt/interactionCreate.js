@@ -235,7 +235,7 @@ module.exports = async (client, interaction) => {
   
             let subpath = input.join(" ").trim();
             let validPaths = pathData.filter((x) =>
-              x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes(subpath))
+              x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes(subpath.toLowerCase()))
   
             if (validPaths.length) {
               let embeds = formatPool(client.drawPool(validPaths), embed, options.embedFormat);
@@ -244,7 +244,7 @@ module.exports = async (client, interaction) => {
               let errorPath = pathData.filter((x) =>
                 x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes("error"));
   
-              embed.description = errorPath[0].value || `Subpath not found!`
+              embed.description = errorPath[0]?.value || `Subpath not found!`
             }
           } else {
             embed.description = `You don't have the permissions to use this pool!`

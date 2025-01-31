@@ -9,6 +9,13 @@ async function makeInvEmbed(client, chara, user) {
   if (inv == "") { inv = "-# - You don't seem to own anything..." }
 
   return {
+    "author": {
+      "icon_url": client.config.get("embed_author_icon"),
+      name: "DD INC."
+    },
+    "thumbnail": {
+      "url": client.config.get("embed_thumb")
+    },
     "title": `◆ ${chara.CHARACTER}`,
     "description": inv,
     "url": chara.BASICS || undefined,
@@ -25,6 +32,13 @@ async function makeCharEmbed(client, chara, user) {
   if (!user) user = client.users.cache.find(u => u.username.toLowerCase() == chara.MUN.toLowerCase())
 
   return {
+    "author": {
+      "icon_url": client.config.get("embed_author_icon"),
+      name: "DD INC."
+    },
+    "thumbnail": {
+      "url": client.config.get("embed_thumb")
+    },
     "title": `◆ ${chara.CHARACTER}`,
     "description": `-# \`#${chara["ID #"]}\` of \`#${chara["REALITY #"]}\` ◆ `
       + `\`${chara.PRONOUNS}\` ◆ \`${chara.HEIGHT}\`\n\n`

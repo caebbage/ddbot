@@ -56,7 +56,7 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
           }
 
           let validPaths = pathData.filter((x) =>
-            x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes(subpath))
+            x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes(subpath.toLowerCase()))
 
           if (validPaths.length) {
             let embeds = formatPool(client.drawPool(validPaths), embed, options.embedFormat);
@@ -65,7 +65,7 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
             let errorPath = pathData.filter((x) =>
               x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes("error"));
 
-            embed.description = errorPath[0].value || `Subpath not found... double check if you typoed, and ping teru if you didn't.`
+            embed.description = errorPath[0]?.value || `Subpath not found... double check if you typoed, and ping teru if you didn't.`
           }
         } else {
           embed.description = `You don't have the permissions to use this pool!`
