@@ -79,6 +79,9 @@ module.exports = (client) => {
 
     var charaSearch = [list.find(x => x.name.toLowerCase().includes(`"${search.toLowerCase()}"`))]
     if (!charaSearch[0]) charaSearch = fuzzy.filter(search, list, {
+      extract: (x) => x.name
+    })
+    if (!charaSearch[0]) charaSearch = fuzzy.filter(search, list, {
       extract: (x) => x.name.normalize('NFD').replace(/\p{Diacritic}/gu, '')
     })
     charaSearch = charaSearch.map(x => x.original?.name || x.name);
