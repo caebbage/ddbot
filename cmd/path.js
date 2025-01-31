@@ -28,7 +28,7 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
             options.buttonColor = /(?<=^\*\*ButtonColor:\*\*) ?(\d+)$/mi.exec(configData.value)?.[0]?.trim()
           }
 
-          let subpath = inputs.length ? inputs.join(" ").toLowerCase() : "default";
+          let subpath = inputs.length ? inputs.join(" ").toLowerCase().trim() : "default";
           if (cmd.get("tabs") === "TRUE") {
             let paths = [];
             pathData.forEach(path => {
@@ -56,7 +56,7 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
           }
 
           let validPaths = pathData.filter((x) =>
-            x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes(subpath.toLowerCase()))
+            x.subpaths.split(",").map(x => x.toLowerCase().trim()).includes(subpath))
 
           if (validPaths.length) {
             let embeds = formatPool(client.drawPool(validPaths), embed, options.embedFormat);
