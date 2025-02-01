@@ -47,7 +47,7 @@ module.exports = async (client) => {
       async set(row, key, val) {
         row.set(key, val);
         try {
-          await row.save();
+          await row.save({raw: true});
           return true;
         } catch (err) {
           console.log(err);
