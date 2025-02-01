@@ -22,6 +22,7 @@ module.exports = async (client, msg) => {
 
     const command = (
       args.indexOf(" ") < args.indexOf("\n") && args.indexOf("\n") != -1 && args.indexOf("\n") != -1 ? args.slice(0, args.indexOf(' ')) :
+      args.indexOf(" ") != -1 ? args.slice(0, args.indexOf(' ')) :
       args.indexOf("\n") != -1 ? args.slice(0, args.indexOf('\n')) : args
     ).toLowerCase()
 
