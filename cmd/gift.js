@@ -20,14 +20,19 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
           embed.description = "Select the character to gift from."
 
           components = arrayChunks(
-            charas.map(x => {
+            [... charas.map(x => {
               return {
                 custom_id: "giftfrom:" + x.get("CHARACTER"),
                 type: 2,
                 style: 4,
                 label: x.get("CHARACTER")
               }
-            }), 5).map((x) => {
+            }), {
+              custom_id: "cancel",
+              type: 2,
+              style: 2,
+              label: "Cancel"
+            }], 5).map((x) => {
               return {
                 type: 1,
                 components: x

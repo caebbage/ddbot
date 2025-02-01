@@ -108,15 +108,19 @@ module.exports = async (client, interaction) => {
             let charas = (await client.findChar(target.username)).filter(char => char.get("CHARACTER") != name)
             if (charas.length) {
               let components = arrayChunks(
-                charas.map(x => {
+                [... charas.map(x => {
                   return {
                     custom_id: "giftto:" + x.get("CHARACTER"),
                     type: 2,
                     style: 4,
                     label: x.get("CHARACTER")
                   }
-                })
-                , 5).map((x) => {
+                }), {
+                  custom_id: "cancel",
+                  type: 2,
+                  style: 2,
+                  label: "Cancel"
+                }], 5).map((x) => {
                   return {
                     type: 1,
                     components: x
@@ -254,6 +258,15 @@ module.exports = async (client, interaction) => {
         }
         interaction.update({
           embeds: [embed]
+        })
+      }
+      else if (interaction.customId == "cancel") {
+        interaction.update({
+          embeds: [{
+            description: "Transaction cancelled.",
+            color: client.config.get('embed_color')
+          }],
+          components: []
         })
       }
     } catch (err) { console.log(err) }

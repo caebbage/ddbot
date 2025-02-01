@@ -20,7 +20,10 @@ module.exports = async (client, msg) => {
 
     var args = msg.content.slice(prefix.length).trim()
 
-    const command = (args.indexOf(" ") != -1 ? args.slice(0, args.indexOf(' ')) : args).toLowerCase()
+    const command = (
+      args.indexOf(" ") < args.indexOf("\n") && args.indexOf("\n") != -1 && args.indexOf("\n") != -1 ? args.slice(0, args.indexOf(' ')) :
+      args.indexOf("\n") != -1 ? args.slice(0, args.indexOf('\n')) : args
+    ).toLowerCase()
 
     // check if command exists
     const cmd = client.cmd[command] || client.alt.cmd[command] && client.cmd[client.alt.cmd[command]]
