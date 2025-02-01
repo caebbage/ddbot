@@ -35,8 +35,6 @@ module.exports = async (client, msg) => {
       } else return args
     })().toLowerCase().trim();
 
-    console.log(command)
-
     // check if command exists
     const cmd = client.cmd[command] || client.alt.cmd[command] && client.cmd[client.alt.cmd[command]]
 
