@@ -46,6 +46,11 @@ module.exports = async (client) => {
       },
       async set(row, key, val) {
         row.set(key, val);
+        row._rawData = row._rawData.map(val => {
+          if (/^\d+\/\d+$/m.test(val)) {
+            return +/\d+(?=\/\d+)/.exec(val)[0]
+          }
+        })
         try {
           await row.save({raw: true});
           return true;
