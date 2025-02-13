@@ -42,10 +42,10 @@ async function makeCharEmbed(client, chara, user) {
   }
 
   if (statuses.length) {
-      stats.E += (statuses?.reduce((a, b) => a + +b.E) || 0),
-      stats.G += (statuses?.reduce((a, b) => a + +b.G) || 0),
-      stats.O += (statuses?.reduce((a, b) => a + +b.O) || 0),
-      stats.S += (statuses?.reduce((a, b) => a + +b.S) || 0)
+      stats.E += (statuses?.reduce((a, b) => a + +b.E, 0) || 0),
+      stats.G += (statuses?.reduce((a, b) => a + +b.G, 0) || 0),
+      stats.O += (statuses?.reduce((a, b) => a + +b.O, 0) || 0),
+      stats.S += (statuses?.reduce((a, b) => a + +b.S, 0) || 0)
   }
 
   return {
