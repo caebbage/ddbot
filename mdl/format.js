@@ -31,6 +31,23 @@ async function makeCharEmbed(client, chara, user) {
   let self = (await client.db.chart.find(x => x.get("Name") == chara.CHARACTER))?.get(chara.CHARACTER);
   if (!user) user = client.users.cache.find(u => u.username.toLowerCase() == chara.MUN.toLowerCase())
 
+  let statuses =  client.statuses
+    ?.map(x => x.toObject()).filter(x => chara.STATS.split(", ").includes(x.STATUS))
+
+  let stats = {
+    E: (+chara.E),
+    G: (+chara.G),
+    O: (+chara.O),
+    S: (+chara.S)
+  }
+
+  if (statuses.length) {
+      stats.E += (statuses?.reduce((a, b) => a + +b.E) || 0),
+      stats.G += (statuses?.reduce((a, b) => a + +b.G) || 0),
+      stats.O += (statuses?.reduce((a, b) => a + +b.O) || 0),
+      stats.S += (statuses?.reduce((a, b) => a + +b.S) || 0)
+  }
+
   return {
     "author": {
       "icon_url": client.config.get("embed_author_icon"),
@@ -45,10 +62,20 @@ async function makeCharEmbed(client, chara, user) {
       + (self ? `${self.split("\n").map(x => "> " + x).join("\n")}\n\n` : "")
       + `\`\`\`ansi\n\u001b[2;31m\u001b[1;31mLEVEL ${pad(chara.LEVEL)}\u001b[0m\u001b[2;31m\u001b[0m\n\`\`\`\n`
       + `\` DEATHS \` ${chara.DEATHS}　　 \` MD \` ${chara.MD} \` EP \` ${chara.EP}\n\n`
-      + `\`     ESSENCE \` ${(isNaN(+chara.E) || +chara.E >= 0) ? "+" : "-"}${isNaN(+chara.E) ? chara.E : pad(Math.abs(+chara.E))}　`
-      + `\`        GRIT \` ${(isNaN(+chara.G) || +chara.G >= 0) ? "+" : "-"}${isNaN(+chara.G) ? chara.G : pad(Math.abs(+chara.G))}\n`
-      + `\` OBSERVATION \` ${(isNaN(+chara.O) || +chara.O >= 0) ? "+" : "-"}${isNaN(+chara.O) ? chara.O : pad(Math.abs(+chara.O))}　`
-      + `\`      SANITY \` ${(isNaN(+chara.S) || +chara.S >= 0) ? "+" : "-"}${isNaN(+chara.S) ? chara.S : pad(Math.abs(+chara.S))}`,
+      + `\`     ESSENCE \` ${isNaN(stats.E) ? "??" : (stats.E >= 0 ? "+" : "-") + pad(Math.abs(stats.E)) }　`
+      + `\`        GRIT \` ${isNaN(stats.G) ? "??" : (stats.G >= 0 ? "+" : "-") + pad(Math.abs(stats.G)) }\n`
+      + `\` OBSERVATION \` ${isNaN(stats.O) ? "??" : (stats.E >= 0 ? "+" : "-") + pad(Math.abs(stats.O)) }　`
+      + `\`      SANITY \` ${isNaN(stats.E) ? "??" : (stats.E >= 0 ? "+" : "-") + pad(Math.abs(stats.S)) }`
+      + (statuses.length ? 
+        "\n```ansi\n"
+        + statuses.map(st => 
+          `[2;31m[1;31m[${st.STATUS}]` + (st.EFFECT ? ":[0m[2;31m[0m\n" +
+            st.EFFECT : "[0m[2;31m[0m")
+            + (st.STATS ? `\n  [2;31m[2;30m${st.STATS}[0m[2;31m[0m` : "")
+        ).join("\n\n")
+        + "```" 
+        : "")
+      ,
     "url": chara.BASICS || undefined,
     "color": client.config.get("embed_color"),
     "footer": {

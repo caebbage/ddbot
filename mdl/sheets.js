@@ -17,10 +17,11 @@ module.exports = async (client) => {
   client.refreshData = async function () {
     await client.data.loadInfo();
     client.config = (await client.data.sheetsById[0].getRows())[0];
+    client.statuses = await client.data.sheetsById[client.config.get("statuses")]?.getRows() || client.statuses;
     client.pools = await client.data.sheetsById[client.config.get("pools")]?.getRows() || client.pools;
     client.paths = await client.data.sheetsById[client.config.get("paths")]?.getRows() || client.paths;
     
-    console.log("Config, pools, and paths refreshed.")
+    console.log("Config, statuses, pools, and paths refreshed.")
   }
   
   client.refreshData();
