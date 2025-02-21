@@ -61,7 +61,7 @@ async function makeCharEmbed(client, chara, user) {
       + `\`${chara.PRONOUNS}\` ◆ \`${chara.HEIGHT}\`\n\n`
       + (self ? `${self.split("\n").map(x => "> " + x).join("\n")}\n\n` : "")
       + `\`\`\`ansi\n\u001b[2;31m\u001b[1;31mLEVEL ${pad(chara.LEVEL)}\u001b[0m\u001b[2;31m\u001b[0m\n\`\`\`\n`
-      + `\` DEATHS \` ${chara.DEATHS}　　 \` MD \` ${chara.MD} \` EP \` ${chara.EP}\n\n`
+      + `\` DEATHS \` ${chara.DEATHS}　　\` HP \` ${chara.HP} \` MD \` ${chara.MD} \` EP \` ${chara.EP}\n\n`
       + `\`     ESSENCE \` ${isNaN(stats.E) ? "??" : (stats.E >= 0 ? "+" : "-") + pad(Math.abs(stats.E)) }　`
       + `\`        GRIT \` ${isNaN(stats.G) ? "??" : (stats.G >= 0 ? "+" : "-") + pad(Math.abs(stats.G)) }\n`
       + `\` OBSERVATION \` ${isNaN(stats.O) ? "??" : (stats.E >= 0 ? "+" : "-") + pad(Math.abs(stats.O)) }　`
