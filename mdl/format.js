@@ -64,8 +64,8 @@ async function makeCharEmbed(client, chara, user) {
       + `\` DEATHS \` ${chara.DEATHS}　　\` HP \` ${chara.HP} \` MD \` ${chara.MD} \` EP \` ${chara.EP}\n\n`
       + `\`     ESSENCE \` ${isNaN(stats.E) ? "??" : (stats.E >= 0 ? "+" : "-") + pad(Math.abs(stats.E)) }　`
       + `\`        GRIT \` ${isNaN(stats.G) ? "??" : (stats.G >= 0 ? "+" : "-") + pad(Math.abs(stats.G)) }\n`
-      + `\` OBSERVATION \` ${isNaN(stats.O) ? "??" : (stats.E >= 0 ? "+" : "-") + pad(Math.abs(stats.O)) }　`
-      + `\`      SANITY \` ${isNaN(stats.E) ? "??" : (stats.E >= 0 ? "+" : "-") + pad(Math.abs(stats.S)) }`
+      + `\` OBSERVATION \` ${isNaN(stats.O) ? "??" : (stats.O >= 0 ? "+" : "-") + pad(Math.abs(stats.O)) }　`
+      + `\`      SANITY \` ${isNaN(stats.S) ? "??" : (stats.S >= 0 ? "+" : "-") + pad(Math.abs(stats.S)) }`
       + (statuses.length ? 
         "\n```ansi\n"
         + statuses.map(st => 
