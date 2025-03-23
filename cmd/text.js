@@ -13,9 +13,9 @@ exports.run = async (client, message, inputs, comment) => { // eslint-disable-li
         embed.description = styleText.format(style, inputs.join(" ").trim());
       } else embed.description = "Please include text to be converted."
     } else embed.description = "Please specify a valid style."
-    + `\nAcceptable styles are as follows: ${options.map(x => `\`${x}\``).join(" ")}.`
+    + `\nAcceptable styles are as follows: ${Object.keys(styleText.charSets).map(x => `\`${x}\``).join(" ")}.`
   } else embed.description = "Please provide an input in the format `" + (client.config.get("prefix") || 'dd!') + "text [styles] [text to format]`."
-  + `\nAcceptable styles are as follows: ${options.map(x => `\`${x}\``).join(" ")}.`
+  + `\nAcceptable styles are as follows: ${Object.keys(styleText.charSets).map(x => `\`${x}\``).join(" ")}.`
 
   message.reply(
     {
