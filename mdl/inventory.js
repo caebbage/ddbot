@@ -14,7 +14,7 @@ module.exports = {
   toObject(list) {
     let res = {};
     if (list) {
-      [...list.matchAll(/^- (.+?)( \(x(\d+)\))?$/gm)]
+      [...list.matchAll(/^[-*] (.+?)( \(x(\d+)\))?$/gm)]
         .forEach(x => {
           if (res[x[1]]) res[x[1]] += x[3] ? +x[3] : 1
           else res[x[1]] = x[3] ? +x[3] : 1

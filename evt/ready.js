@@ -3,5 +3,18 @@ module.exports = async client => {
   client.guilds.cache.each(guild => {
     guild.members.fetch()
   })
+
+  try {
+    client.user.setPresence({
+      activities: [{
+        name: 'Lost? Try dd!help',
+        type: 4
+      }],
+      status: 'online'
+    })
+  } catch (err) {
+    console.log(err)
+  }
+
   console.log(`${client.user.tag}, ready to serve.`);
 };
