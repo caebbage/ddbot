@@ -3,14 +3,7 @@ require('dotenv').config({silent: process.env.NODE_ENV === 'production'});
 const Discord = require("discord.js"),
   client = new Discord.Client({
     intents: 46595,
-    partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
-    sweepers: {
-      ...Discord.Options.defaultSweeperSettings,
-      messages: {
-        interval: 10800, // 3 hours
-        lifetime: 10800
-      }
-    }
+    partials: ['MESSAGE', 'CHANNEL', 'REACTION']
   }),
   { promisify } = require("util"),
   readdir = promisify(require("fs").readdir);

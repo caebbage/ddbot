@@ -20,14 +20,14 @@ module.exports = async (client) => {
     client.statuses = await client.data.sheetsById[client.config.get("statuses")]?.getRows() || client.statuses;
     client.pools = await client.data.sheetsById[client.config.get("pools")]?.getRows() || client.pools;
     client.paths = await client.data.sheetsById[client.config.get("paths")]?.getRows() || client.paths;
-    
-    console.log("Config, statuses, pools, and paths refreshed.")
+
+    console.log("Config, statuses, pools, paths, refreshed.")
   }
-  
-  client.refreshData();
+
+  await client.refreshData();
 
 
-  client.db = {src: new GoogleSpreadsheet('1JeXEb5R7MuF8IsnKfTNd5E5nMf3gwU93iVENB5M41-8',  serviceAccountAuth),}; 
+  client.db = { src: new GoogleSpreadsheet('1JeXEb5R7MuF8IsnKfTNd5E5nMf3gwU93iVENB5M41-8', serviceAccountAuth), };
   await client.db.src.loadInfo();
 
   // function for setup of data fetching/retrieval for each sheet
@@ -36,13 +36,13 @@ module.exports = async (client) => {
 
     return {
       src: async () => await client.db.src.sheetsById[id].getRows(),
-      async find (func) {
+      async find(func) {
         return (await this.src()).find(func);
       },
-      async filter (func) {
+      async filter(func) {
         return (await this.src()).filter(func);
       },
-      async map (func) {
+      async map(func) {
         return (await this.src()).map(func);
       },
       async set(row, key, val) {
@@ -66,4 +66,29 @@ module.exports = async (client) => {
   client.db.charas = await sheetSetup(0, 4);
   client.db.npcs = await sheetSetup('382892795', 3);
   client.db.chart = await sheetSetup('902346809', 3);
+  client.db.reactroles = await (async function (sheetId) {
+    let res = {
+      sheet: client.data.sheetsById[sheetId],
+      async reload() {
+        this.data = await this.sheet?.getRows() ?? this.data
+        for (let row of this.data.filter(row => row.get("message_id"))) {
+          await (await client.channels.fetch(row.get("message_channel"))).messages.fetch(row.get("message_id"))
+        }
+      },
+      data: [],
+      find(...args) {
+        return this.data.find(...args)
+      },
+      filter(...args) {
+        return this.data.filter(...args)
+      },
+      map(...args) {
+        return this.data.map(...args)
+      },
+      toObjects() { return this.data.map(x => x.toObject()) }
+    }
+    await res.reload();
+
+    return res
+  })(client.config.get("reactroles"));
 }
