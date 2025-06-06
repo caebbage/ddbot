@@ -49,8 +49,7 @@ module.exports = async (client, msg) => {
     args.shift();
 
     if (cmd) {
-
-      if (cmd.conf.adminOnly && !client.isModerator(msg.member))
+      if (cmd.conf.adminOnly && !(await client.isModerator(msg)))
         return msg.reply("You're not authorized to use this command!");
       
       if (!msg.guild && !cmd.conf.DM)

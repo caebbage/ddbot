@@ -50,9 +50,8 @@ module.exports = (client) => {
     return false;
   };
 
-  client.isModerator = async function (member) {
-    if (member?.roles.cache.get(client.config.get("moderator_role"))) return true
-    else return false
+  client.isModerator = async function (message) {
+    return message.member?.permissionsIn(message.channel).has("ADMINISTRATOR")
   }
 
   client.findChar = async function (search, withNPC) {
