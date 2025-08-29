@@ -39,6 +39,9 @@ module.exports = async (client) => {
       async find(func) {
         return (await this.src()).find(func);
       },
+      async refresh() {
+        await client.db.src.sheetsById[id].loadHeaderRow(rows)
+      },
       async filter(func) {
         return (await this.src()).filter(func);
       },

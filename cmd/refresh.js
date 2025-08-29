@@ -1,6 +1,7 @@
 exports.run = async (client, message, action) => { // eslint-disable-line no-unused-vars
   try {
     await client.refreshData();
+    await client.db.chart.refresh();
     message.react("✅")
   } catch (e) {
     console.log(e);
